@@ -66,17 +66,17 @@ public class BoardControl {
 	public Board selectOne(Board input) {
 
 		Board result = new Board();
-		
+
 		DBConn db = new DBConn();
-	
+
 		try ( Connection conn = db.getConnection()){
 			StringBuilder sql = new StringBuilder();
 			sql.append("SELECT * FROM Board WHERE id = ?");
-			
+
 			PreparedStatement pstmt = conn.prepareStatement(sql.toString());
 			pstmt.setInt(1, input.getId());
 			ResultSet rs = pstmt.executeQuery();
-			
+
 			if(rs.next()) {
 				result.setId(rs.getInt("id"));
 				result.setTitle(rs.getString("title"));
@@ -93,26 +93,44 @@ public class BoardControl {
 	}
 	public int updateBoard (Board control) {
 		int result = 0;
-		
+
 		DBConn db = new DBConn();
 		try ( Connection conn = db.getConnection()){
 			StringBuilder sql = new StringBuilder();
 			sql.append("UPDATE Board SET title = ?, content=?, writer=? WHERE id =?");
-			
+
 			PreparedStatement pstmt = conn.prepareStatement(sql.toString());
 			pstmt.setString(1, control.getTitle());
 			pstmt.setString(2, control.getContent());
 			pstmt.setString(3, control.getWriter());
 			pstmt.setInt(4, control.getId());
-			
+
 			result = pstmt.executeUpdate();
 		}catch(SQLException e) {
 			e.printStackTrace();
 		}catch(ClassNotFoundException e) {
-		e.printStackTrace();	
+			e.printStackTrace();	
 		}	
 		return result;
 	}
-}
+	public int deleteBoard(int id) {
+		int result = 0;
 
+		DBConn db = new DBConn();
+		try ( Connection conn = db.getConnection()){
+			StringBuilder sql = new StringBuilder();
+			sql.append("DELETE FROM board WHERE id = ?");
+
+			PreparedStatement pstmt = conn.prepareStatement(sql.toString());
+			pstmt.setInt(1, id);
+
+			result = pstmt.executeUpdate();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch(SQLException e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+}
 
